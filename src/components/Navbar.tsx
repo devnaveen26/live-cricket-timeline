@@ -55,7 +55,7 @@ const Navbar = () => {
               className="flex items-center"
             >
               <h1 className="text-xl md:text-2xl font-bold text-cricket-500">
-                Cricket<span className="text-primary">League</span>
+               Multai Premiere Cricket<span className="text-primary">League</span>
               </h1>
             </Link>
           </div>
