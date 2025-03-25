@@ -1,12 +1,11 @@
-
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import LiveScoreBoard from '@/components/LiveScoreBoard';
 import MatchCard from '@/components/MatchCard';
-import { matches, liveScore, getLiveMatches, getMatchById } from '@/data/mockData';
-import { Message, MessageSquare, Users, Zap } from 'lucide-react';
+import { matches, liveScore, getLiveMatches, getMatchById, getTeamById } from '@/data/mockData';
+import { MessageSquare, Users, Zap } from 'lucide-react';
 
 const LiveScore = () => {
   const [searchParams] = useSearchParams();
@@ -210,7 +209,7 @@ const LiveScore = () => {
                       <div className="flex justify-between">
                         <span className="text-gray-600">Toss</span>
                         <span className="font-medium">
-                          {getMatchById(currentMatch.tossWinner)?.name} ({currentMatch.tossDecision})
+                          {getTeamById(currentMatch.tossWinner)?.name} ({currentMatch.tossDecision})
                         </span>
                       </div>
                     )}
