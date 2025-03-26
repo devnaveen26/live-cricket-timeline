@@ -1,9 +1,8 @@
 "use client"
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import PlayerCard from '@/components/PlayerCard';
 import { 
@@ -26,8 +25,8 @@ import {
 } from 'lucide-react';
 
 const PlayerProfile = () => {
-  const { id } = useParams<{ id: string }>();
-  const playerId = parseInt(id || '0');
+  const params = useParams<{ id: string }>();
+  const playerId = parseInt(params?.id || '0');
   const player = getPlayerById(playerId);
   const team = player ? getTeamById(player.teamId) : null;
   
@@ -701,9 +700,8 @@ const PlayersPage = () => {
 };
 
 const Players = () => {
-  const { id } = useParams<{ id: string }>();
-  
-  return id ? <PlayerProfile /> : <PlayersPage />;
+  const params = useParams<{ id: string }>();
+  return params?.id ? <PlayerProfile /> : <PlayersPage />;
 };
 
 export default Players;

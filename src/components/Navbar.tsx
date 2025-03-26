@@ -9,7 +9,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const location = usePathname();
+  const pathname = usePathname();
   const isMobile = useIsMobile();
 
   const toggleMenu = () => setIsOpen(!isOpen);
@@ -26,7 +26,7 @@ const Navbar = () => {
 
   useEffect(() => {
     closeMenu();
-  }, [location.pathname]);
+  }, [pathname]);
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -40,7 +40,7 @@ const Navbar = () => {
   ];
 
   const isActive = (path: string) => {
-    return location.pathname === path;
+    return pathname === path;
   };
 
   return (
