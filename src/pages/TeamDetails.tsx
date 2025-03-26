@@ -25,8 +25,8 @@ import {
 } from 'lucide-react';
 
 const TeamDetails = () => {
-  const { id } = useParams<{ id: string }>();
-  const teamId = parseInt(id || '0');
+  const params = useParams<{ id: string }>();
+  const teamId = parseInt(params?.id || '0');
   const team = getTeamById(teamId);
   const players = getPlayersByTeamId(teamId);
   const captain = team ? getPlayerById(team.captain) : null;
