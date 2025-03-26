@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Player, Team, getTeamById } from '@/data/mockData';
 import { Award, TrendingUp } from 'lucide-react';
 
@@ -19,7 +18,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, showTeam = true }) => {
   const isTopBowler = player.wickets > 100;
   
   return (
-    <Link to={`/players/${player.id}`}>
+    <Link href={`/players/${player.id}`}>
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 h-full card-hover">
         <div className="relative">
           <div 

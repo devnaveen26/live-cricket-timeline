@@ -1,6 +1,8 @@
+"use client"
 
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import PlayerCard from '@/components/PlayerCard';
@@ -44,11 +46,11 @@ const TeamDetails = () => {
   if (!team) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
-        <Navbar />
+        {/* <Navbar /> */}
         <main className="flex-grow pt-24">
           <div className="container mx-auto px-4 py-16 text-center">
             <h1 className="text-2xl font-bold mb-4">Team not found</h1>
-            <Link to="/teams" className="text-blue-600 hover:text-blue-800">
+            <Link href="/teams" className="text-blue-600 hover:text-blue-800">
               Back to Teams
             </Link>
           </div>
@@ -60,7 +62,7 @@ const TeamDetails = () => {
   
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <Navbar />
+      {/* <Navbar /> */}
       
       <main className="flex-grow pt-16">
         {/* Team Header */}
@@ -73,7 +75,7 @@ const TeamDetails = () => {
           <div className="absolute inset-0 bg-black/20"></div>
           <div className="container mx-auto px-4 py-16 relative z-10">
             <Link 
-              to="/teams" 
+              href="/teams" 
               className="inline-flex items-center text-white bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6 hover:bg-white/30 transition-colors"
             >
               <ArrowLeft size={16} className="mr-2" /> Back to Teams

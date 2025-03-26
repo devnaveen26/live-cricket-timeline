@@ -1,3 +1,4 @@
+"use client"
 
 import React, { useState, useEffect } from 'react';
 import { LiveScore, Team, Player, Match, getTeamById, getPlayerById, getMatchById } from '@/data/mockData';

@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Team, getPlayerById } from '@/data/mockData';
 import { Trophy, Users } from 'lucide-react';
 
@@ -12,7 +11,7 @@ const TeamCard: React.FC<TeamCardProps> = ({ team }) => {
   const captain = getPlayerById(team.captain);
   
   return (
-    <Link to={`/teams/${team.id}`}>
+    <Link href={`/teams/${team.id}`}>
       <div 
         className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all card-hover relative h-full"
       >

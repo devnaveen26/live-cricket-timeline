@@ -1,5 +1,7 @@
+"use client"
+
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import LiveScoreBoard from '@/components/LiveScoreBoard';
@@ -7,8 +9,20 @@ import MatchCard from '@/components/MatchCard';
 import { matches, liveScore, getLiveMatches, getMatchById, getTeamById } from '@/data/mockData';
 import { MessageSquare, Users, Zap } from 'lucide-react';
 
+// Helper function for consistent date formatting
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'UTC' // Use UTC to ensure consistency
+  };
+  return date.toLocaleDateString('en-US', options);
+};
+
 const LiveScore = () => {
-  const [searchParams] = useSearchParams();
+  const searchParams = useSearchParams();
   const [selectedMatchId, setSelectedMatchId] = useState<number>(0);
   const [liveMatches, setLiveMatches] = useState(getLiveMatches());
   const [commentaryInput, setCommentaryInput] = useState('');
@@ -19,7 +33,7 @@ const LiveScore = () => {
   ]);
   
   useEffect(() => {
-    const matchId = searchParams.get('matchId');
+    const matchId = searchParams?.get('matchId');
     if (matchId) {
       setSelectedMatchId(parseInt(matchId));
     } else if (liveMatches.length > 0) {
@@ -46,7 +60,7 @@ const LiveScore = () => {
   if (liveMatches.length === 0) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
-        <Navbar />
+        {/* <Navbar /> */}
         
         <main className="flex-grow pt-16">
           <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white">
@@ -85,7 +99,7 @@ const LiveScore = () => {
   
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <Navbar />
+      {/* <Navbar /> */}
       
       <main className="flex-grow pt-16">
         <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white">
@@ -199,7 +213,7 @@ const LiveScore = () => {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Date</span>
-                      <span className="font-medium">{new Date(currentMatch.date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                      <span className="font-medium">{formatDate(currentMatch.date)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Time</span>

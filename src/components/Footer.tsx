@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Facebook, Twitter, Instagram, Youtube, Mail } from 'lucide-react';
 
 const Footer = () => {
@@ -35,19 +34,19 @@ const Footer = () => {
             <h3 className="font-semibold text-lg mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="text-gray-400 hover:text-white transition-colors">Home</Link>
+                <Link href="/" className="text-gray-400 hover:text-white transition-colors">Home</Link>
               </li>
               <li>
-                <Link to="/teams" className="text-gray-400 hover:text-white transition-colors">Teams</Link>
+                <Link href="/teams" className="text-gray-400 hover:text-white transition-colors">Teams</Link>
               </li>
               <li>
-                <Link to="/schedule" className="text-gray-400 hover:text-white transition-colors">Match Schedule</Link>
+                <Link href="/schedule" className="text-gray-400 hover:text-white transition-colors">Match Schedule</Link>
               </li>
               <li>
-                <Link to="/live-score" className="text-gray-400 hover:text-white transition-colors">Live Score</Link>
+                <Link href="/live-score" className="text-gray-400 hover:text-white transition-colors">Live Score</Link>
               </li>
               <li>
-                <Link to="/leaderboard" className="text-gray-400 hover:text-white transition-colors">Leaderboard</Link>
+                <Link href="/leaderboard" className="text-gray-400 hover:text-white transition-colors">Leaderboard</Link>
               </li>
             </ul>
           </div>

@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import Navbar from '@/components/Navbar';
@@ -169,7 +171,7 @@ const Admin = () => {
   if (!isLoggedIn) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
-        <Navbar />
+        {/* <Navbar /> */}
         
         <main className="flex-grow pt-16 flex items-center justify-center">
           <div className="max-w-md w-full p-8 bg-white rounded-lg shadow-sm">
@@ -245,7 +247,7 @@ const Admin = () => {
   // Admin panel after successful login
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <Navbar />
+      {/* <Navbar /> */}
       
       <main className="flex-grow pt-16">
         <div className="container mx-auto px-4 py-8">

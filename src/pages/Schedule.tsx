@@ -1,3 +1,4 @@
+"use client"
 
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
@@ -72,7 +73,7 @@ const Schedule = () => {
   
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <Navbar />
+      {/* <Navbar /> */}
       
       <main className="flex-grow pt-16">
         <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white">
