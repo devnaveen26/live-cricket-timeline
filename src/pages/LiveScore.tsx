@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -21,7 +21,7 @@ const formatDate = (dateString: string) => {
   return date.toLocaleDateString('en-US', options);
 };
 
-const LiveScore = () => {
+const LiveScoreContent = () => {
   const searchParams = useSearchParams();
   const [selectedMatchId, setSelectedMatchId] = useState<number>(0);
   const [liveMatches, setLiveMatches] = useState(getLiveMatches());
@@ -298,6 +298,14 @@ const LiveScore = () => {
       
       <Footer />
     </div>
+  );
+};
+
+const LiveScore = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LiveScoreContent />
+    </Suspense>
   );
 };
 
