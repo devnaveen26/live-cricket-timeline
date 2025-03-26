@@ -1,3 +1,4 @@
+"use client"
 
 import React, { useState } from 'react';
 import Navbar from '@/components/Navbar';
@@ -65,7 +66,7 @@ const Gallery = () => {
   
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <Navbar />
+      {/* <Navbar /> */}
       
       <main className="flex-grow pt-16">
         <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white">
@@ -184,7 +185,7 @@ const Gallery = () => {
                       <h3 className="font-semibold mb-1 text-balance">{image.caption}</h3>
                       <div className="flex items-center mb-2 text-sm opacity-90">
                         <Calendar size={14} className="mr-1" />
-                        <span>{new Date(image.date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                        <span>{image.date}</span>
                       </div>
                       <div className="flex flex-wrap gap-1 mt-2">
                         {image.tags.map((tag, index) => (

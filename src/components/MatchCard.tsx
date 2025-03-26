@@ -1,8 +1,19 @@
-
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Calendar, Clock, MapPin } from 'lucide-react';
-import { Match, Team, getTeamById, formatDate } from '@/data/mockData';
+import { Match, Team, getTeamById } from '@/data/mockData';
+
+// Helper function for consistent date formatting
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'UTC' // Use UTC to ensure consistency
+  };
+  return date.toLocaleDateString('en-US', options);
+};
 
 interface MatchCardProps {
   match: Match;
@@ -102,7 +113,7 @@ const MatchCard: React.FC<MatchCardProps> = ({ match, showDetails = true }) => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                 <div className="flex items-center text-sm text-gray-600">
                   <Calendar size={16} className="mr-2 text-gray-400" />
-                  <span>{formattedDate}</span>
+                  <span>{formatDate(match.date)}</span>
                 </div>
                 <div className="flex items-center text-sm text-gray-600">
                   <Clock size={16} className="mr-2 text-gray-400" />
@@ -119,7 +130,7 @@ const MatchCard: React.FC<MatchCardProps> = ({ match, showDetails = true }) => {
           {isLive && (
             <div className="mt-4">
               <Link 
-                to={`/live-score?matchId=${match.id}`}
+                href={`/live-score?matchId=${match.id}`}
                 className="block w-full text-center bg-cricket-500 hover:bg-cricket-600 text-white py-2 rounded-md transition-colors"
               >
                 Watch Live

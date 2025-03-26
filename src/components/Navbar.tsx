@@ -1,13 +1,15 @@
+"use client"
 
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const location = useLocation();
+  const location = usePathname();
   const isMobile = useIsMobile();
 
   const toggleMenu = () => setIsOpen(!isOpen);
@@ -51,11 +53,11 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link 
-              to="/" 
+              href="/" 
               className="flex items-center"
             >
               <h1 className="text-xl md:text-2xl font-bold text-cricket-500">
-               Multai Premiere Cricket<span className="text-primary">League</span>
+               Cricket <span className="text-primary">League</span>
               </h1>
             </Link>
           </div>
@@ -65,7 +67,7 @@ const Navbar = () => {
             {navLinks.map((link) => (
               <Link
                 key={link.path}
-                to={link.path}
+                href={link.path}
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                   isActive(link.path)
                     ? 'text-cricket-600 bg-cricket-50'
@@ -101,7 +103,7 @@ const Navbar = () => {
             {navLinks.map((link) => (
               <Link
                 key={link.path}
-                to={link.path}
+                href={link.path}
                 className={`px-3 py-2 rounded-md text-base font-medium transition-colors ${
                   isActive(link.path)
                     ? 'text-cricket-600 bg-cricket-50'
