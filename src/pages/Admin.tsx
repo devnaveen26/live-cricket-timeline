@@ -36,6 +36,24 @@ import {
 
 type AdminTab = 'dashboard' | 'matches' | 'teams' | 'players' | 'live-scoring';
 
+// Add these types to help with type safety
+type BatterStats = {
+  id: number;
+  name: string;
+  runs: number;
+  balls: number;
+  isStriker: boolean;
+};
+
+type BowlerStats = {
+  id: number;
+  name: string;
+  overs: number;
+  maidens: number;
+  runs: number;
+  wickets: number;
+};
+
 const Admin = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
@@ -47,6 +65,43 @@ const Admin = () => {
   const [commentaryText, setCommentaryText] = useState('');
   const { toast } = useToast();
   
+  // New state for more detailed live scoring
+  const [batters, setBatters] = useState<BatterStats[]>([
+    { 
+      id: liveScoreData.currentBatsmen[0], 
+      name: getPlayerById(liveScoreData.currentBatsmen[0])?.name || '', 
+      runs: 0, 
+      balls: 0, 
+      isStriker: true 
+    },
+    { 
+      id: liveScoreData.currentBatsmen[1], 
+      name: getPlayerById(liveScoreData.currentBatsmen[1])?.name || '', 
+      runs: 0, 
+      balls: 0, 
+      isStriker: false 
+    }
+  ]);
+
+  const [bowlers, setBowlers] = useState<BowlerStats[]>([
+    {
+      id: liveScoreData.currentBowler,
+      name: getPlayerById(liveScoreData.currentBowler)?.name || '',
+      overs: 0,
+      maidens: 0,
+      runs: 0,
+      wickets: 0
+    }
+  ]);
+
+  // Add a new state to track if the innings is complete
+  const [isInningsComplete, setIsInningsComplete] = useState(false);
+
+  // Add additional state to track innings number
+  const [currentInnings, setCurrentInnings] = useState<1|2>(1);
+  const [firstInningsScore, setFirstInningsScore] = useState<number | null>(null);
+  const [matchResult, setMatchResult] = useState<string | null>(null);
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -78,6 +133,17 @@ const Admin = () => {
     });
   };
   
+  // Function to rotate strike
+  const rotateStrike = () => {
+    setBatters(prevBatters => 
+      prevBatters.map(batter => ({
+        ...batter, 
+        isStriker: !batter.isStriker
+      }))
+    );
+  };
+
+  // Updated ball event handler with more comprehensive logic
   const handleBallEventSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -90,59 +156,182 @@ const Admin = () => {
       return;
     }
     
-    // Update recent balls (add to beginning, keep last 6)
+    // Update recent balls
     const updatedBalls = [newBallEvent, ...liveScoreData.recentBalls.slice(0, 5)];
     
-    // Update score based on event
+    // Initialize variables
     let runs = liveScoreData.totalRuns;
     let wickets = liveScoreData.wickets;
     let overs = liveScoreData.overs;
     
-    // Process the ball event
+    // Update batters and bowler stats
+    let updatedBatters = [...batters];
+    let updatedBowlers = [...bowlers];
+    
+    // Find striker
+    const strikerIndex = updatedBatters.findIndex(b => b.isStriker);
+    const nonStrikerIndex = strikerIndex === 0 ? 1 : 0;
+    
+    // Process ball event
     switch (newBallEvent) {
       case '0':
+        updatedBatters[strikerIndex].balls++;
+        updatedBowlers[0].runs += 0;
+        updatedBowlers[0].overs += 0.1;
         overs += 0.1;
         break;
       case '1':
-        runs += 1;
+        runs++;
+        updatedBatters[strikerIndex].runs++;
+        updatedBatters[strikerIndex].balls++;
+        updatedBowlers[0].runs += 1;
+        updatedBowlers[0].overs += 0.1;
+        // Rotate strike for single
+        updatedBatters[strikerIndex].isStriker = false;
+        updatedBatters[nonStrikerIndex].isStriker = true;
         overs += 0.1;
         break;
       case '2':
         runs += 2;
+        updatedBatters[strikerIndex].runs += 2;
+        updatedBatters[strikerIndex].balls++;
+        updatedBowlers[0].runs += 2;
+        updatedBowlers[0].overs += 0.1;
         overs += 0.1;
         break;
       case '3':
         runs += 3;
+        updatedBatters[strikerIndex].runs += 3;
+        updatedBatters[strikerIndex].balls++;
+        updatedBowlers[0].runs += 3;
+        updatedBowlers[0].overs += 0.1;
+        // Rotate strike for 3 runs
+        updatedBatters[strikerIndex].isStriker = false;
+        updatedBatters[nonStrikerIndex].isStriker = true;
         overs += 0.1;
         break;
       case '4':
         runs += 4;
+        updatedBatters[strikerIndex].runs += 4;
+        updatedBatters[strikerIndex].balls++;
+        updatedBowlers[0].runs += 4;
+        updatedBowlers[0].overs += 0.1;
         overs += 0.1;
         break;
       case '6':
         runs += 6;
+        updatedBatters[strikerIndex].runs += 6;
+        updatedBatters[strikerIndex].balls++;
+        updatedBowlers[0].runs += 6;
+        updatedBowlers[0].overs += 0.1;
         overs += 0.1;
         break;
       case 'W':
-        wickets += 1;
+        wickets++;
+        updatedBatters[strikerIndex].balls++;
+        updatedBowlers[0].wickets++;
+        updatedBowlers[0].overs += 0.1;
         overs += 0.1;
+        
+        // Check if all wickets have fallen (10 wickets in cricket)
+        if (wickets >= 10) {
+          // End the innings
+          toast({
+            title: 'Innings Complete',
+            description: 'All wickets have fallen. The innings is now complete.',
+            variant: 'default',
+          });
+          
+          // Disable further scoring
+          setNewBallEvent('');
+          setCommentaryText('');
+          
+          // You might want to add additional logic here to switch innings
+          // For now, we'll just update the UI to show the innings is complete
+          
+          // Update state with final score
+          setLiveScoreData({
+            ...liveScoreData,
+            totalRuns: runs,
+            wickets: wickets,
+            overs: overs,
+            recentBalls: updatedBalls,
+          });
+          
+          setBatters(updatedBatters);
+          setBowlers(updatedBowlers);
+          
+          return; // Exit the function early
+        }
+        
+        // Replace dismissed batter if the innings isn't over
+        updatedBatters[strikerIndex] = {
+          id: 0, // You'd typically select next batter from team
+          name: 'Next Batter',
+          runs: 0,
+          balls: 0,
+          isStriker: true
+        };
         break;
       case 'WD':
-        runs += 1; // Wide adds 1 run but no ball is counted
+        runs++;
+        updatedBowlers[0].runs += 1;
+        // No over increment for wides
         break;
       case 'NB':
-        runs += 1; // No ball adds 1 run but no ball is counted
-        break;
-      default:
+        runs++;
+        updatedBowlers[0].runs += 1;
+        // No over increment for no balls
         break;
     }
     
-    // Format overs correctly (convert 0.10 to 1.0)
-    if ((overs * 10) % 10 === 6) {
-      overs = Math.floor(overs) + 1;
+    // Complete over logic
+    if (Math.round((overs * 10) % 10) === 6) {
+      overs = Math.floor(overs) + 1.0;
+      
+      // Check for maiden over
+      const currentBowlerIndex = 0; // Assuming first bowler in the array
+      const currentOverRuns = updatedBalls.reduce((total, ball) => {
+        // Only count runs directly off the bat (not extras)
+        if (['0', '1', '2', '3', '4', '6'].includes(ball)) {
+          return total + parseInt(ball);
+        }
+        return total;
+      }, 0);
+      
+      if (currentOverRuns === 0) {
+        updatedBowlers[currentBowlerIndex].maidens++;
+      }
+      
+      // Rotate strike at end of over
+      updatedBatters[strikerIndex].isStriker = false;
+      updatedBatters[nonStrikerIndex].isStriker = true;
+      
+      // Change bowler at end of over
+      // For demo purposes, we'll just create a new bowler with a different ID
+      const nextBowlerId = liveScoreData.currentBowler === 17 ? 18 : 17;
+      const nextBowlerName = getPlayerById(nextBowlerId)?.name || 'New Bowler';
+      
+      // Update the bowlers array with the new bowler
+      updatedBowlers = [
+        {
+          id: nextBowlerId,
+          name: nextBowlerName,
+          overs: 0,
+          maidens: 0,
+          runs: 0,
+          wickets: 0
+        }
+      ];
+      
+      // Update the live score data with the new bowler
+      liveScoreData.currentBowler = nextBowlerId;
+      
+      // Reset recent balls
+      updatedBalls.length = 0;
     }
     
-    // Update live score data
+    // Update state
     setLiveScoreData({
       ...liveScoreData,
       totalRuns: runs,
@@ -151,18 +340,26 @@ const Admin = () => {
       recentBalls: updatedBalls,
     });
     
-    // Submit commentary if provided
-    if (commentaryText) {
-      // In a real application, this would be sent to a database or API
-      console.log('Commentary:', commentaryText);
-      setCommentaryText('');
-    }
+    setBatters(updatedBatters);
+    setBowlers(updatedBowlers);
     
+    // Reset input
     setNewBallEvent('');
+    setCommentaryText('');
     
     toast({
       title: 'Score Updated',
       description: `Added ${newBallEvent} to the scorecard.`,
+      variant: 'default',
+    });
+  };
+
+  // Manual strike rotation button handler
+  const handleManualStrikeRotation = () => {
+    rotateStrike();
+    toast({
+      title: 'Strike Rotated',
+      description: 'Batsmen positions have been swapped.',
       variant: 'default',
     });
   };
@@ -573,27 +770,34 @@ const Admin = () => {
                             <div>
                               <h4 className="text-sm font-medium text-gray-700 mb-2">Current Batsmen</h4>
                               <div className="space-y-2">
-                                <div className="flex justify-between items-center bg-gray-50 p-2 rounded">
-                                  <div className="flex items-center">
-                                    <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                                    <span>{getPlayerById(liveScoreData.currentBatsmen[0])?.name}</span>
+                                {batters.map(batter => (
+                                  <div 
+                                    key={batter.id} 
+                                    className={`flex justify-between items-center ${batter.isStriker ? 'bg-green-50' : 'bg-gray-50'} p-2 rounded`}
+                                  >
+                                    <div className="flex items-center">
+                                      <div className={`w-2 h-2 rounded-full mr-2 ${batter.isStriker ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                                      <span>{batter.name}</span>
+                                      {batter.isStriker && <span className="ml-2 text-xs text-green-600">(Striker)</span>}
+                                    </div>
+                                    <span className="font-medium">{batter.runs} ({batter.balls})</span>
                                   </div>
-                                  <span className="font-medium">75 (42)</span>
-                                </div>
-                                <div className="flex justify-between items-center bg-gray-50 p-2 rounded">
-                                  <div className="flex items-center">
-                                    <div className="w-2 h-2 bg-gray-300 rounded-full mr-2"></div>
-                                    <span>{getPlayerById(liveScoreData.currentBatsmen[1])?.name}</span>
-                                  </div>
-                                  <span className="font-medium">32 (28)</span>
-                                </div>
+                                ))}
                               </div>
+                              <button 
+                                onClick={handleManualStrikeRotation}
+                                className="mt-2 w-full px-3 py-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100"
+                              >
+                                Rotate Strike
+                              </button>
                             </div>
                             <div>
                               <h4 className="text-sm font-medium text-gray-700 mb-2">Current Bowler</h4>
                               <div className="flex justify-between items-center bg-gray-50 p-2 rounded">
-                                <span>{getPlayerById(liveScoreData.currentBowler)?.name}</span>
-                                <span className="font-medium">2-28 (3.2)</span>
+                                <span>{bowlers[0].name}</span>
+                                <span className="font-medium">
+                                  {bowlers[0].wickets}-{bowlers[0].runs} ({Math.floor(bowlers[0].overs)}.{Math.round((bowlers[0].overs - Math.floor(bowlers[0].overs)) * 10)})
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -636,8 +840,9 @@ const Admin = () => {
                                       newBallEvent === event 
                                         ? 'bg-blue-600 text-white' 
                                         : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                                    }`}
+                                    } ${isInningsComplete ? 'opacity-50 cursor-not-allowed' : ''}`}
                                     onClick={() => setNewBallEvent(event)}
+                                    disabled={isInningsComplete}
                                   >
                                     {event}
                                   </button>
@@ -660,7 +865,10 @@ const Admin = () => {
                             
                             <button
                               type="submit"
-                              className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                              className={`px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors ${
+                                isInningsComplete ? 'opacity-50 cursor-not-allowed' : ''
+                              }`}
+                              disabled={isInningsComplete}
                             >
                               <Save size={16} className="inline mr-1" /> Update Score
                             </button>
