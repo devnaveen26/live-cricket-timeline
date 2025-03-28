@@ -44,7 +44,8 @@ export const initializeDatabase = async () => {
     // Set up relationships
     setupRelationships();
 
-    await sequelize.sync({ force: false, alter: true });
+    // Only sync if tables don't exist
+    await sequelize.sync({ force: false, alter: false });
     console.log("db.ts: Database synchronized successfully.");
   } catch (error) {
     console.error("db.ts: Unable to connect to the database:", error);
