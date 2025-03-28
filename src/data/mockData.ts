@@ -114,7 +114,6 @@ export interface FeatureSection {
   icon: any;
   link: string;
 }
-
 // Mock Teams Data
 export const teams: Team[] = [
   {

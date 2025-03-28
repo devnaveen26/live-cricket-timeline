@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { LiveScore, Team, Player, Match, getTeamById, getPlayerById, getMatchById } from '@/data/mockData';
+import { LiveScore, getTeamById, getPlayerById, getMatchById } from '@/data/mockData';
 import { Play, PauseCircle, Clock, Gauge, Award } from 'lucide-react';
 
 interface LiveScoreBoardProps {
@@ -166,7 +166,7 @@ const LiveScoreBoard: React.FC<LiveScoreBoardProps> = ({ matchId, liveScore, cla
             <div className="mt-3">
               <h4 className="text-xs font-medium text-gray-500 mb-2">This Over</h4>
               <div className="flex space-x-2">
-                {liveScore.recentBalls.map((ball, index) => (
+                {liveScore.recentBalls.map((ball: string, index: number) => (
                   <div 
                     key={index}
                     className={`w-8 h-8 flex items-center justify-center rounded-full text-sm font-medium ${getBallClass(ball)}`}
