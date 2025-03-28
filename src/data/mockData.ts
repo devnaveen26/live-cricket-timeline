@@ -1,4 +1,5 @@
 
+import { FeatureSection, GalleryImage, LiveScore, Match, NewsItem, Player, SponsorAd, Team } from '@/lib/types';
 import { 
   Shield, 
   Trophy, 
@@ -575,7 +576,7 @@ export const matches: Match[] = [
 ];
 
 // Current Live Score
-export const liveScore: LiveScore = {
+export const liveScore: any = {
   matchId: 10,
   inning: 1,
   battingTeamId: 1,
