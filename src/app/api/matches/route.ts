@@ -1,9 +1,11 @@
 import Match from "@/data-service/models/Match";
+import { ensureDatabaseInitialized } from "@/lib/db-init";
 import { Match as MatchType } from "@/lib/types";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   try {
+    await ensureDatabaseInitialized();
     const matches = await Match.findAll();
     return NextResponse.json(matches);
   } catch (error) {
@@ -17,6 +19,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    await ensureDatabaseInitialized();
     const reqMatch: MatchType = await request.json();
 
     if (
@@ -45,6 +48,7 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
   try {
+    await ensureDatabaseInitialized();
     const reqMatch: MatchType = await request.json();
 
     if (!reqMatch.id) {
@@ -74,6 +78,7 @@ export async function PUT(request: Request) {
 
 export async function PATCH(request: Request) {
   try {
+    await ensureDatabaseInitialized();
     const reqMatch: MatchType = await request.json();
 
     if (!reqMatch.id) {

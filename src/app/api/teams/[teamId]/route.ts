@@ -1,4 +1,5 @@
 import { Team, Player } from "@/data-service/db";
+import { ensureDatabaseInitialized } from "@/lib/db-init";
 import { Team as TeamType } from "@/lib/types";
 import { NextResponse } from "next/server";
 import { Model } from "sequelize";
@@ -8,6 +9,7 @@ export async function GET(
   { params }: { params: { teamId: string } }
 ) {
   try {
+    await ensureDatabaseInitialized();
     const teamId = params.teamId;
 
     if (!teamId) {

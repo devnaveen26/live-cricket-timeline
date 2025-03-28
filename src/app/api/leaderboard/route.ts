@@ -1,9 +1,11 @@
 import { sequelize } from "@/data-service/db";
 import { QueryTypes } from "sequelize";
 import { NextResponse } from "next/server";
+import { ensureDatabaseInitialized } from "@/lib/db-init";
 
 export async function GET(request: Request) {
   try {
+    await ensureDatabaseInitialized();
     const teams = await sequelize.query(
       `SELECT * FROM Teams ORDER BY points DESC, nrr DESC`,
       {

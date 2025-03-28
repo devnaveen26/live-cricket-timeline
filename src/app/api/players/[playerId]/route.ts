@@ -1,10 +1,12 @@
 import Player from "@/data-service/models/Player";
+import { ensureDatabaseInitialized } from "@/lib/db-init";
 import { NextResponse } from "next/server";
 
 export async function GET(
   request: Request,
   { params }: { params: { playerId: string } }
 ) {
+  await ensureDatabaseInitialized();
   const playerId = params.playerId;
 
   try {
@@ -36,6 +38,7 @@ export async function DELETE(
   { params }: { params: { playerId: string } }
 ) {
   try {
+    await ensureDatabaseInitialized();
     const playerId = params.playerId;
 
     if (!playerId) {

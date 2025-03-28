@@ -1,4 +1,5 @@
 import Match from "@/data-service/models/Match";
+import { ensureDatabaseInitialized } from "@/lib/db-init";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -6,6 +7,7 @@ export async function GET(
   { params }: { params: { matchId: string } }
 ) {
   try {
+    await ensureDatabaseInitialized();
     const matchId = params.matchId;
 
     if (!matchId) {
@@ -36,6 +38,7 @@ export async function DELETE(
   { params }: { params: { matchId: string } }
 ) {
   try {
+    await ensureDatabaseInitialized();
     const matchId = params.matchId;
 
     if (!matchId) {

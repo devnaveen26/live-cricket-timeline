@@ -1,9 +1,11 @@
 import Team from "@/data-service/models/Team";
 import { Team as TeamType } from "@/lib/types";
 import { NextResponse } from "next/server";
+import { ensureDatabaseInitialized } from "@/lib/db-init";
 
 export async function GET() {
   try {
+    await ensureDatabaseInitialized();
     const teams = await Team.findAll();
     return NextResponse.json(teams);
   } catch (error) {
@@ -17,6 +19,7 @@ export async function GET() {
 
 export async function DELETE(request: Request) {
   try {
+    await ensureDatabaseInitialized();
     const { id } = await request.json();
 
     if (!id) {
@@ -45,6 +48,7 @@ export async function DELETE(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    await ensureDatabaseInitialized();
     const reqTeam: TeamType = await request.json();
 
     if (!reqTeam.name || !reqTeam.shortName) {
@@ -66,25 +70,21 @@ export async function POST(request: Request) {
   }
 }
 
-export async function PUT(request: Request) {
+export async function PATCH(request: Request) {
   try {
+    await ensureDatabaseInitialized();
     const reqTeam: TeamType = await request.json();
 
     if (!reqTeam.id) {
-      return NextResponse.json(
-        { error: "Team ID is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Team ID is required" }, { status: 400 });
     }
 
     const team = await Team.findByPk(reqTeam.id);
-
     if (!team) {
       return NextResponse.json({ error: "Team not found" }, { status: 404 });
     }
 
     await team.update(reqTeam);
-
     return NextResponse.json(team);
   } catch (error) {
     console.error("Error updating team:", error);
@@ -93,23 +93,4 @@ export async function PUT(request: Request) {
       { status: 500 }
     );
   }
-}
-
-export async function PATCH(request: Request) {
-  const reqTeam: TeamType = await request.json();
-
-  if (!reqTeam.id) {
-    return NextResponse.json(
-      { error: "Team ID is required" },
-      { status: 400 }
-    );
-  }
-
-  const team = await Team.findByPk(reqTeam.id);
-  if (!team) {
-    return NextResponse.json({ error: "Team not found" }, { status: 404 });
-  }
-
-  await team.update(reqTeam);
-  return NextResponse.json(team);
 }

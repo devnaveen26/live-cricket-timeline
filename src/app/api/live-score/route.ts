@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import LiveScore from "@/data-service/models/LiveScore";
 import { LiveScore as LiveScoreType } from "@/lib/types";
+import { ensureDatabaseInitialized } from "@/lib/db-init";
 
 export async function POST(request: Request) {
   try {
+    await ensureDatabaseInitialized();
     const reqLiveScore: LiveScoreType = await request.json();
 
     if (

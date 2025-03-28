@@ -1,7 +1,9 @@
+import { ensureDatabaseInitialized } from "@/lib/db-init";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   try {
+    await ensureDatabaseInitialized();
     const { searchParams } = new URL(request.url);
     const teamId = searchParams.get("teamId");
 

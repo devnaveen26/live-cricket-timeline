@@ -1,11 +1,13 @@
 import { LiveScore, Match, Team, Player } from "@/data-service/db";
 import { NextResponse } from "next/server";
+import { ensureDatabaseInitialized } from "@/lib/db-init";
 
 export async function GET(
   request: Request,
   { params }: { params: { matchId: string } }
 ) {
   try {
+    await ensureDatabaseInitialized();
     const { matchId } = params;
 
     if (!matchId) {
@@ -89,6 +91,7 @@ export async function DELETE(
   { params }: { params: { matchId: string } }
 ) {
   try {
+    await ensureDatabaseInitialized();
     const matchId = params.matchId;
 
     // Find the latest live score entry for this match
@@ -124,6 +127,7 @@ export async function PATCH(
   { params }: { params: { matchId: string } }
 ) {
   try {
+    await ensureDatabaseInitialized();
     const matchId = params.matchId;
     const updates = await request.json();
 
