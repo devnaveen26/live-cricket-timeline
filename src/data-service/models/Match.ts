@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import sequelize from "../config";
+import sequelize from "../sequelize";
 
 const Match = sequelize.define("Match", {
   id: {
@@ -42,6 +42,29 @@ const Match = sequelize.define("Match", {
   },
   motm: {
     type: DataTypes.INTEGER,
+  },
+  team1Runs: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
+  team1Wickets: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
+  team2Runs: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
+  team2Wickets: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
+  winner: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: "Teams",
+      key: "id",
+    },
   },
 });
 

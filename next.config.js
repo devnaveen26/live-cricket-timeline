@@ -8,6 +8,15 @@ const nextConfig = {
         sqlite3: false,
       };
     }
+    // Exclude PostgreSQL and other unused dialects
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'pg-hstore': false,
+      'pg': false,
+      'mysql2': false,
+      'mariadb': false,
+      'mssql': false,
+    };
     return config;
   },
 }

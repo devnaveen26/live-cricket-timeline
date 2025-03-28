@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import sequelize from "../config";
+import { sequelize } from "../db";
 
 const NewsItem = sequelize.define("NewsItem", {
   id: {

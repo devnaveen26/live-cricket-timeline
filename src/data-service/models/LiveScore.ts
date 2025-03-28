@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import sequelize from "../config";
+import sequelize from "../sequelize";
 
 const LiveScore = sequelize.define("LiveScore", {
   id: {
@@ -37,14 +37,14 @@ const LiveScore = sequelize.define("LiveScore", {
     type: DataTypes.FLOAT,
     defaultValue: 0,
   },
-  currentBatsmen: {
-    type: DataTypes.JSON,
-  },
-  currentBowler: {
+  currentBatsmenId: {
     type: DataTypes.INTEGER,
   },
-  recentBalls: {
-    type: DataTypes.JSON,
+  currentBowlerId: {
+    type: DataTypes.INTEGER,
+  },
+  currentBall: {
+    type: DataTypes.STRING,
   },
   requiredRunRate: {
     type: DataTypes.FLOAT,

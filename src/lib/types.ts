@@ -53,19 +53,22 @@ export type Match = {
 };
 
 export type LiveScore = {
+  id?: number;
   matchId: number;
-  inning: 1 | 2;
+  inning: number;
   battingTeamId: number;
   bowlingTeamId: number;
   totalRuns: number;
   wickets: number;
   overs: number;
-  currentBatsmen: [number, number]; // player IDs of current batsmen
-  currentBowler: number; // player ID of current bowler
-  recentBalls: string[];
+  currentBatsmenId: number;
+  currentBowlerId: number;
+  currentBall: string;
   requiredRunRate?: number;
   requiredRuns?: number;
   remainingBalls?: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export type SponsorAd = {

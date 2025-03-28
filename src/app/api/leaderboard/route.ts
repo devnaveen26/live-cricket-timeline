@@ -1,30 +1,23 @@
+import { sequelize } from "@/data-service/db";
+import { QueryTypes } from "sequelize";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const teamId = searchParams.get("teamId");
-
-    if (!teamId) {
-      return NextResponse.json(
-        { error: "Team ID is required" },
-        { status: 400 }
-      );
-    }
-
-    // const leaderboard = await Leaderboard.findAll({ where: { teamId } });
-    // to be implemented ::: Calculation from matches table
-    return NextResponse.json([
+    const teams = await sequelize.query(
+      `SELECT * FROM Teams ORDER BY points DESC, nrr DESC`,
       {
-        teamId: 1,
-        teamName: "Team 1",
-        matchesPlayed: 10,
-        matchesWon: 6,
-        matchesLost: 4,
-        points: 12,
-        position: 1,
-      },
-    ]);
+        type: QueryTypes.SELECT,
+      }
+    );
+
+    // Add position field based on order from query
+    const leaderboard = teams.map((team: any, index: number) => ({
+      position: index + 1,
+      ...team,
+    }));
+
+    return NextResponse.json(leaderboard);
   } catch (error) {
     console.error("Error fetching leaderboard:", error);
     return NextResponse.json(

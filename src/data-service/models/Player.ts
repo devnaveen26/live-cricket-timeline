@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import sequelize from "../config";
+import sequelize from "../sequelize";
 
 const Player = sequelize.define("Player", {
   id: {
@@ -29,6 +29,7 @@ const Player = sequelize.define("Player", {
   },
   nationality: {
     type: DataTypes.STRING,
+    defaultValue: "Indian"
   },
   age: {
     type: DataTypes.INTEGER,
