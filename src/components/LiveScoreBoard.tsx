@@ -1,12 +1,12 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { liveScore, getTeamById, getPlayerById, getMatchById } from '@/data/mockData';
+import { LiveScore, getTeamById, getPlayerById, getMatchById } from '@/data/mockData';
 import { Play, PauseCircle, Clock, Gauge, Award } from 'lucide-react';
 
 interface LiveScoreBoardProps {
   matchId: number;
-  liveScore: typeof liveScore;
+  liveScore: LiveScore;
   className?: string;
 }
 
